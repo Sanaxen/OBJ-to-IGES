@@ -481,48 +481,32 @@ void PointToNormal::MakeNormal(int numpoint, double* points, double* normal, int
 			continue;
 		}
 
-#if 10
 		this->mgrid_.GetTri(id, vtx);
 
-		double	drc1[3];
-		double	drc2[3];
-		double	drc3[3];
+		double	dir1[3];
+		double	dir2[3];
+		double	dir3[3];
 		double	norm[3];
-		double	lnglng;
 
-		drc1[0] = vtx[1][0] - vtx[0][0];
-		drc1[1] = vtx[1][1] - vtx[0][1];
-		drc1[2] = vtx[1][2] - vtx[0][2];
-		drc2[0] = vtx[2][0] - vtx[1][0];
-		drc2[1] = vtx[2][1] - vtx[1][1];
-		drc2[2] = vtx[2][2] - vtx[1][2];
-		drc3[0] = vtx[0][0] - vtx[2][0];
-		drc3[1] = vtx[0][1] - vtx[2][1];
-		drc3[2] = vtx[0][2] - vtx[2][2];
-		norm[0] = drc1[2] * drc3[1] - drc1[1] * drc3[2];
-		norm[1] = drc1[0] * drc3[2] - drc1[2] * drc3[0];
-		norm[2] = drc1[1] * drc3[0] - drc1[0] * drc3[1];
-		lnglng = norm[0] * norm[0] + norm[1] * norm[1] + norm[2] * norm[2];
-		double lng = sqrt( lnglng );
-		//lng = 1.0;
-
-		normal[3*i  ] = norm[0]/lng;
-		normal[3*i+1] = norm[1]/lng;
-		normal[3*i+2] = norm[2]/lng;
-#else
-		double	norm[3];
-		double	lnglng;
-
-		norm[0] = on_point[0] - points[3*i  ];
-		norm[1] = on_point[1] - points[3*i+1];
-		norm[2] = on_point[2] - points[3*i+2];
-
-		lnglng = norm[0] * norm[0] + norm[1] * norm[1] + norm[2] * norm[2];
-		double lng = sqrt( lnglng );
-
-		normal[3*i  ] = norm[0]/lng;
-		normal[3*i+1] = norm[1]/lng;
-		normal[3*i+2] = norm[2]/lng;
-#endif
+		dir1[0] = vtx[1][0] - vtx[0][0];
+		dir1[1] = vtx[1][1] - vtx[0][1];
+		dir1[2] = vtx[1][2] - vtx[0][2];
+		dir2[0] = vtx[2][0] - vtx[1][0];
+		dir2[1] = vtx[2][1] - vtx[1][1];
+		dir2[2] = vtx[2][2] - vtx[1][2];
+		dir3[0] = vtx[0][0] - vtx[2][0];
+		dir3[1] = vtx[0][1] - vtx[2][1];
+		dir3[2] = vtx[0][2] - vtx[2][2];
+		norm[0] = dir1[2] * dir3[1] - dir1[1] * dir3[2];
+		norm[1] = dir1[0] * dir3[2] - dir1[2] * dir3[0];
+		norm[2] = dir1[1] * dir3[0] - dir1[0] * dir3[1];
+		const double lng = sqrt(norm[0] * norm[0] + norm[1] * norm[1] + norm[2] * norm[2]);
+		
+		if (lng > 1.0E-16)
+		{
+			normal[3 * i] = norm[0] / lng;
+			normal[3 * i + 1] = norm[1] / lng;
+			normal[3 * i + 2] = norm[2] / lng;
+		}
 	}
 }
